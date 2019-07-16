@@ -1,28 +1,117 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Form, FormGroup, Label, Input, Row, Col, Button } from "reactstrap";
+import Calendar from "react-calendar";
+import cookie from 'react-cookies';
+
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+
+    constructor (props) {
+        super(props);
+
+        this.state = {
+            apiKey: cookie.load('apiKey'),
+            token: cookie.load('token'),
+            boardId: cookie.load('boardId'),
+            username: cookie.load('username'),
+            idMember: '',
+            fullName: '',
+            date: new Date(),
+            data: []
+        };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.generateStandUp = this.generateStandUp.bind(this);
+    this.filterResults = this.filterResults.bind(this);
+    }
+
+
+    handleChange(event) {
+        this.setState({[event.target.name]: event.target.value});
+        cookie.save(event.target.name, event.target.value, { path: '/' })
+    }
+
+    handleChangeDate = date => this.setState({ date })
+
+    generateStandUp() {
+        fetch('https://api.trello.com/1/members/' + this.state.username)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    idMember: data.id,
+                    fullName: data.fullName
+                }, () => {
+                    fetch('https://api.trello.com/1/boards/' + this.state.boardId +
+                        '/actions?key=' + this.state.apiKey + '&token=' + this.state.token)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data[0])
+                            let filteredData = this.filterResults(data)
+                            this.setState({data: filteredData});
+                });
+            })
+        });
+    }
+
+    filterResults(data) {
+        let filteredData = data.filter((item) => {
+            let convDate = new Date(new Date(item.date).toLocaleString("en-US"));
+                return item.idMemberCreator === this.state.idMember &&
+                convDate.getDate() === this.state.date.getDate() &&
+                convDate.getMonth() === this.state.date.getMonth() &&
+                convDate.getFullYear() == this.state.date.getFullYear()
+        });
+
+        return filteredData
+    }
+
+
+    render() {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    StandApp
+                </header>
+                <br/><br/>
+                <Row className="justify-content-center">
+                <Col sm="4">
+                    <Form>
+                        <FormGroup>
+                            <Label for="apiKey">API Key</Label>
+                            <Input type="textfield" name="apiKey" id="apiKey" placeholder="Enter your API Key" value={this.state.apiKey} onChange={this.handleChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="token">Token</Label>
+                            <Input type="textfield" name="token" id="token" placeholder="Enter your Token" value={this.state.token} onChange={this.handleChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="token">Board ID</Label>
+                            <Input type="textfield" name="boardId" id="boardId" placeholder="Enter Board ID" value={this.state.boardId} onChange={this.handleChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="username">Username</Label>
+                            <Input type="textfield" name="username" id="username" placeholder="Enter Username" value={this.state.username} onChange={this.handleChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="username">StandUp Day</Label>
+                            <Calendar
+                                onChange={this.handleChangeDate}
+                                value={this.state.date}
+                            />
+                        </FormGroup>
+                        <Button onClick={() => this.generateStandUp()}>Generate Stand Up</Button>
+                    </Form>
+                </Col>
+                </Row>
+                <br/><br/>
+                <Row className="justify-content-center">
+                    {(this.state.data.length > 0) ? <div><div>Keep it up {this.state.fullName}!</div>
+                    <div><pre>{JSON.stringify(this.state.data, null, 2) }</pre></div></div> : (this.state.fullName) ? <div>You have been lazy {this.state.fullName}!</div> : null}
+                </Row>
+            </div>
+        );
+    }
 }
 
 export default App;
