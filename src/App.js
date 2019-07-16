@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Form, FormGroup, Label, Input, Row, Col, Button } from "reactstrap";
+import { Form, FormGroup, Label, Input, Row, Col, Button, Alert } from "reactstrap";
 import Calendar from "react-calendar";
 import cookie from 'react-cookies';
 
@@ -18,12 +18,13 @@ class App extends Component {
             idMember: '',
             fullName: '',
             date: new Date(),
-            data: []
+            data: [],
+            errors: []
         };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.generateStandUp = this.generateStandUp.bind(this);
-    this.filterResults = this.filterResults.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.generateStandUp = this.generateStandUp.bind(this);
+        this.filterResults = this.filterResults.bind(this);
     }
 
 
@@ -35,23 +36,44 @@ class App extends Component {
     handleChangeDate = date => this.setState({ date })
 
     generateStandUp() {
-        fetch('https://api.trello.com/1/members/' + this.state.username)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    idMember: data.id,
-                    fullName: data.fullName
-                }, () => {
-                    fetch('https://api.trello.com/1/boards/' + this.state.boardId +
-                        '/actions?key=' + this.state.apiKey + '&token=' + this.state.token)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data[0])
-                            let filteredData = this.filterResults(data)
-                            this.setState({data: filteredData});
+        let errorsTmp = []
+
+        if (!this.state.apiKey) {
+            errorsTmp.push('ApiKey is required')
+        }
+        if (!this.state.token) {
+            errorsTmp.push('Token is required')
+        }
+        if (!this.state.boardId) {
+            errorsTmp.push('BoardId is required')
+        }
+        if (!this.state.username) {
+            errorsTmp.push('Username is required')
+        }
+
+        this.setState({
+            errors: errorsTmp
+        })
+
+
+        if (errorsTmp.length === 0) {
+            fetch('https://api.trello.com/1/members/' + this.state.username)
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        idMember: data.id,
+                        fullName: data.fullName
+                    }, () => {
+                        fetch('https://api.trello.com/1/boards/' + this.state.boardId +
+                            '/actions?key=' + this.state.apiKey + '&token=' + this.state.token)
+                            .then(response => response.json())
+                            .then(data => {
+                                let filteredData = this.filterResults(data)
+                                this.setState({data: filteredData});
+                            });
+                    })
                 });
-            })
-        });
+        }
     }
 
     filterResults(data) {
@@ -60,14 +82,17 @@ class App extends Component {
                 return item.idMemberCreator === this.state.idMember &&
                 convDate.getDate() === this.state.date.getDate() &&
                 convDate.getMonth() === this.state.date.getMonth() &&
-                convDate.getFullYear() == this.state.date.getFullYear()
+                convDate.getFullYear() === this.state.date.getFullYear()
         });
 
         return filteredData
     }
 
-
     render() {
+        const errorMsgs = this.state.errors.map((msg, id) => {
+            return (<Alert key={id} color="danger">{msg}</Alert>)
+        })
+
         return (
             <div className="App">
                 <header className="App-header">
@@ -76,6 +101,9 @@ class App extends Component {
                 <br/><br/>
                 <Row className="justify-content-center">
                 <Col sm="4">
+                    <div>
+                        {errorMsgs}
+                    </div>
                     <Form>
                         <FormGroup>
                             <Label for="apiKey">API Key</Label>
