@@ -4,6 +4,8 @@ import { Form, FormGroup, Label, Input, Row, Col, Button, Alert } from "reactstr
 import Calendar from "react-calendar";
 import cookie from 'react-cookies';
 
+import {getActionsByBoardId, getMemberInfo} from "./classes/Trello";
+
 
 class App extends Component {
 
@@ -24,7 +26,6 @@ class App extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.generateStandUp = this.generateStandUp.bind(this);
-        this.filterResults = this.filterResults.bind(this);
     }
 
 
@@ -35,7 +36,7 @@ class App extends Component {
 
     handleChangeDate = date => this.setState({ date })
 
-    generateStandUp() {
+    async generateStandUp() {
         let errorsTmp = []
 
         if (!this.state.apiKey) {
@@ -57,65 +58,41 @@ class App extends Component {
 
 
         if (errorsTmp.length === 0) {
-            fetch('https://api.trello.com/1/members/' + this.state.username)
-                .then(response => response.json())
-                .then(
-                    (data) => {
-                        this.setState({
-                            idMember: data.id,
-                            fullName: data.fullName
-                        }, () => {
-                            fetch('https://api.trello.com/1/boards/' + this.state.boardId +
-                                '/actions?key=' + this.state.apiKey + '&token=' + this.state.token)
-                                .then(response => {
-                                    if (response.status !== 200) {
-                                        throw new Error(response.status)
-                                    }
-                                    return response.json()
-                                })
-                                .then(data => {
-                                    let filteredData = this.filterResults(data)
-                                    this.setState({data: filteredData})
-                                }, (error) => {
-                                    let errorMsg
-                                    let errorCode = error.toString().match(/\d+/).map(Number)[0]
+            let memberInfo = await getMemberInfo(this.state.username)
 
-                                    switch (errorCode) {
-                                        case 400:
-                                            errorMsg = 'Invalid Board Id'
-                                            break
-                                        case 401:
-                                            errorMsg = 'Wrong credentials. Access denied'
-                                            break
-                                        default:
-                                            errorMsg = 'Unknown error'
-                                    }
+            if (memberInfo.memberId && memberInfo.memberFullName && !memberInfo.error) {
+                this.setState({
+                    idMember: memberInfo.memberId,
+                    fullName: memberInfo.memberFullName
+                }, async () => {
+                    let result = await getActionsByBoardId(
+                        this.state.apiKey,
+                        this.state.token,
+                        this.state.boardId,
+                        this.state.idMember,
+                        this.state.date
+                    )
 
-                                    this.setState({
-                                        errors: [errorMsg]
-                                    })
-                                });
-                        })
-                    },
-                    (error) => {
+                    if (result.data && ! result.error) {
+                        this.setState({data: result.data})
+                    }
+
+                    if (result.error) {
                         this.setState({
-                            errors: ['Username does not exist']
+                            data: [],
+                            errors: [result.error]
                         })
                     }
-                );
+                })
+            }
+
+            if (memberInfo.error) {
+                this.setState({
+                    errors: [memberInfo.error],
+                    data: []
+                })
+            }
         }
-    }
-
-    filterResults(data) {
-        let filteredData = data.filter((item) => {
-            let convDate = new Date(new Date(item.date).toLocaleString("en-US"));
-                return item.idMemberCreator === this.state.idMember &&
-                convDate.getDate() === this.state.date.getDate() &&
-                convDate.getMonth() === this.state.date.getMonth() &&
-                convDate.getFullYear() === this.state.date.getFullYear()
-        });
-
-        return filteredData
     }
 
     render() {
@@ -165,8 +142,10 @@ class App extends Component {
                 </Row>
                 <br/><br/>
                 <Row className="justify-content-center">
-                    {(this.state.data.length > 0) ? <div><div>Keep it up {this.state.fullName}!</div>
-                    <div><pre>{JSON.stringify(this.state.data, null, 2) }</pre></div></div> : (this.state.fullName) ? <div>You have been lazy {this.state.fullName}!</div> : null}
+                    {(this.state.data.length > 0 && this.state.errors.length === 0) ?
+                        <div><div>Keep it up {this.state.fullName}!</div>
+                        <div><pre>{JSON.stringify(this.state.data, null, 2) }</pre></div></div> :
+                        (this.state.fullName && this.state.errors.length === 0) ? <div>You have been lazy {this.state.fullName}!</div> : null}
                 </Row>
             </div>
         );
