@@ -67,13 +67,32 @@ class App extends Component {
                         }, () => {
                             fetch('https://api.trello.com/1/boards/' + this.state.boardId +
                                 '/actions?key=' + this.state.apiKey + '&token=' + this.state.token)
-                                .then(response => response.json())
+                                .then(response => {
+                                    if (response.status !== 200) {
+                                        throw new Error(response.status)
+                                    }
+                                    return response.json()
+                                })
                                 .then(data => {
                                     let filteredData = this.filterResults(data)
-                                    this.setState({data: filteredData});
+                                    this.setState({data: filteredData})
                                 }, (error) => {
+                                    let errorMsg
+                                    let errorCode = error.toString().match(/\d+/).map(Number)[0]
+
+                                    switch (errorCode) {
+                                        case 400:
+                                            errorMsg = 'Invalid Board Id'
+                                            break
+                                        case 401:
+                                            errorMsg = 'Wrong credentials. Access denied'
+                                            break
+                                        default:
+                                            errorMsg = 'Unknown error'
+                                    }
+
                                     this.setState({
-                                        errors: [error]
+                                        errors: [errorMsg]
                                     })
                                 });
                         })
@@ -122,7 +141,7 @@ class App extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label for="token">Token</Label>
-                            <Input type="textfield" name="token" id="token" placeholder="Enter your Token" value={this.state.token} onChange={this.handleChange}/>
+                            <Input type="password" name="token" id="token" placeholder="Enter your Token" value={this.state.token} onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup>
                             <Label for="token">Board ID</Label>
