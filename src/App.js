@@ -59,20 +59,31 @@ class App extends Component {
         if (errorsTmp.length === 0) {
             fetch('https://api.trello.com/1/members/' + this.state.username)
                 .then(response => response.json())
-                .then(data => {
-                    this.setState({
-                        idMember: data.id,
-                        fullName: data.fullName
-                    }, () => {
-                        fetch('https://api.trello.com/1/boards/' + this.state.boardId +
-                            '/actions?key=' + this.state.apiKey + '&token=' + this.state.token)
-                            .then(response => response.json())
-                            .then(data => {
-                                let filteredData = this.filterResults(data)
-                                this.setState({data: filteredData});
-                            });
-                    })
-                });
+                .then(
+                    (data) => {
+                        this.setState({
+                            idMember: data.id,
+                            fullName: data.fullName
+                        }, () => {
+                            fetch('https://api.trello.com/1/boards/' + this.state.boardId +
+                                '/actions?key=' + this.state.apiKey + '&token=' + this.state.token)
+                                .then(response => response.json())
+                                .then(data => {
+                                    let filteredData = this.filterResults(data)
+                                    this.setState({data: filteredData});
+                                }, (error) => {
+                                    this.setState({
+                                        errors: [error]
+                                    })
+                                });
+                        })
+                    },
+                    (error) => {
+                        this.setState({
+                            errors: ['Username does not exist']
+                        })
+                    }
+                );
         }
     }
 
@@ -122,8 +133,9 @@ class App extends Component {
                             <Input type="textfield" name="username" id="username" placeholder="Enter Username" value={this.state.username} onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="username">StandUp Day</Label>
+                            <Label for="calendar">StandUp Day</Label>
                             <Calendar
+                                name="calendar"
                                 onChange={this.handleChangeDate}
                                 value={this.state.date}
                             />
