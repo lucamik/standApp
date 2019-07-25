@@ -9,5 +9,6 @@
         "distDir": "build"
       }
     }
-  ]
+  ],
+  "alias": "standapp.staging",
 }
