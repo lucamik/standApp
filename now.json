@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "standApp",
+  "alias": "standapp.staging",
   "builds": [
     {
       "src": "package.json",
@@ -9,6 +10,5 @@
         "distDir": "build"
       }
     }
-  ],
-  "alias": "standapp.staging",
+  ]
 }
