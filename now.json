@@ -1,7 +1,7 @@
 {
   "version": 2,
   "name": "standApp",
-  "alias": "standapp.staging",
+  "alias": "standapp-staging.now.sh",
   "builds": [
     {
       "src": "package.json",
