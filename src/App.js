@@ -4,7 +4,7 @@ import { Form, FormGroup, Label, Input, Row, Col, Button, Alert } from "reactstr
 import Calendar from "react-calendar";
 import cookie from 'react-cookies';
 
-import {getActionsByBoardId, getMemberInfo} from "./classes/Trello";
+import {getActionsByBoardId, getBoards, getMemberInfo} from "./classes/Trello";
 
 
 class App extends Component {
@@ -16,6 +16,7 @@ class App extends Component {
             apiKey: cookie.load('apiKey'),
             token: cookie.load('token'),
             boardId: cookie.load('boardId'),
+            boards: [],
             idMember: '',
             fullName: '',
             date: new Date(),
@@ -27,6 +28,16 @@ class App extends Component {
         this.generateStandUp = this.generateStandUp.bind(this);
     }
 
+    componentDidMount() {
+        this.getBoardOptions()
+    }
+
+    async getBoardOptions() {
+        let boards = await getBoards(this.state.apiKey, this.state.token)
+        this.setState({
+            boards: boards
+        })
+    }
 
     handleChange(event) {
         this.setState({[event.target.name]: event.target.value});
@@ -45,7 +56,7 @@ class App extends Component {
             errorsTmp.push('Token is required')
         }
         if (!this.state.boardId) {
-            errorsTmp.push('BoardId is required')
+            errorsTmp.push('Board is required')
         }
 
         this.setState({
@@ -118,7 +129,12 @@ class App extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label for="token">Board ID</Label>
-                            <Input type="textfield" name="boardId" id="boardId" placeholder="Enter Board ID" value={this.state.boardId} onChange={this.handleChange}/>
+                            <Input type="select" name="boardId" id="boardId" value={this.state.boardId} onChange={this.handleChange} >
+                                <option value="">Select a Board</option>
+                                {this.state.boards.map((board) => {
+                                    return <option key={board.id} value={board.id}>{board.name}</option>
+                                })}
+                            </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="calendar">StandUp Day</Label>
