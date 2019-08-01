@@ -1,12 +1,15 @@
 {
-  "name": "create-react-app",
+  "name": "standApp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
     "react": "^16.8.6",
+    "react-calendar": "^2.19.0",
+    "react-cookies": "^0.1.1",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.1",
+    "react-test-renderer": "^16.8.6",
     "reactstrap": "^8.0.0"
   },
   "scripts": {
@@ -15,7 +18,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "now-dev": "react-scripts start",
-    "now-build": "react-scripts build"
+    "now-build": "react-scripts build",
+    "dev": "now dev"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -25,5 +29,17 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "babel-jest": "^23.6.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.3.5",
+    "mockdate": "^2.0.3"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  }
 }
