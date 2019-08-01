@@ -1,13 +1,13 @@
 import {filterActivitiesPerMemberAndDate} from "./Filters";
 
-export const getMemberInfo = async (username) => {
+export const getMemberInfo = async (apiKey, token) => {
     let memberInfo = {
         memberId: null,
         memberFullName: null,
         error: null
     }
 
-    await fetch('https://api.trello.com/1/members/' + username)
+    await fetch('https://api.trello.com/1/member/me?key=' + apiKey + '&token=' + token)
         .then(response => response.json())
         .then(
             (data) => {
@@ -15,7 +15,7 @@ export const getMemberInfo = async (username) => {
                 memberInfo.memberFullName = data.fullName
             },
             (error) => {
-                memberInfo.error = 'Username does not exist'
+                memberInfo.error = 'Could not find any user with these credentials'
             }
         )
 

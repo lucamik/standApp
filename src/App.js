@@ -16,7 +16,6 @@ class App extends Component {
             apiKey: cookie.load('apiKey'),
             token: cookie.load('token'),
             boardId: cookie.load('boardId'),
-            username: cookie.load('username'),
             idMember: '',
             fullName: '',
             date: new Date(),
@@ -48,9 +47,6 @@ class App extends Component {
         if (!this.state.boardId) {
             errorsTmp.push('BoardId is required')
         }
-        if (!this.state.username) {
-            errorsTmp.push('Username is required')
-        }
 
         this.setState({
             errors: errorsTmp
@@ -58,7 +54,7 @@ class App extends Component {
 
 
         if (errorsTmp.length === 0) {
-            let memberInfo = await getMemberInfo(this.state.username)
+            let memberInfo = await getMemberInfo(this.state.apiKey, this.state.token)
 
             if (memberInfo.memberId && memberInfo.memberFullName && !memberInfo.error) {
                 this.setState({
@@ -123,10 +119,6 @@ class App extends Component {
                         <FormGroup>
                             <Label for="token">Board ID</Label>
                             <Input type="textfield" name="boardId" id="boardId" placeholder="Enter Board ID" value={this.state.boardId} onChange={this.handleChange}/>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="username">Username</Label>
-                            <Input type="textfield" name="username" id="username" placeholder="Enter Username" value={this.state.username} onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup>
                             <Label for="calendar">StandUp Day</Label>
