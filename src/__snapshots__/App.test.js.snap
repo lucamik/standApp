@@ -28,7 +28,9 @@ exports[`App should render component correctly 1`] = `
         ]
       }
     >
-      <div />
+      <div
+        className="errorMsg"
+      />
       <Form
         tag="form"
       >
@@ -81,7 +83,7 @@ exports[`App should render component correctly 1`] = `
             name="token"
             onChange={[Function]}
             placeholder="Enter your Token"
-            type="textfield"
+            type="password"
           />
         </FormGroup>
         <FormGroup
@@ -106,35 +108,14 @@ exports[`App should render component correctly 1`] = `
             id="boardId"
             name="boardId"
             onChange={[Function]}
-            placeholder="Enter Board ID"
-            type="textfield"
-          />
-        </FormGroup>
-        <FormGroup
-          tag="div"
-        >
-          <Label
-            for="username"
-            tag="label"
-            widths={
-              Array [
-                "xs",
-                "sm",
-                "md",
-                "lg",
-                "xl",
-              ]
-            }
+            type="select"
           >
-            Username
-          </Label>
-          <Input
-            id="username"
-            name="username"
-            onChange={[Function]}
-            placeholder="Enter Username"
-            type="textfield"
-          />
+            <option
+              value=""
+            >
+              Select a Board
+            </option>
+          </Input>
         </FormGroup>
         <FormGroup
           tag="div"

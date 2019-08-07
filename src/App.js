@@ -42,6 +42,7 @@ class App extends Component {
     handleChange(event) {
         this.setState({[event.target.name]: event.target.value});
         cookie.save(event.target.name, event.target.value, { path: '/' })
+        this.getBoardOptions()
     }
 
     handleChangeDate = date => this.setState({ date })
@@ -115,7 +116,7 @@ class App extends Component {
                 <br/><br/>
                 <Row className="justify-content-center">
                 <Col sm="4">
-                    <div>
+                    <div className="errorMsg">
                         {errorMsgs}
                     </div>
                     <Form>
