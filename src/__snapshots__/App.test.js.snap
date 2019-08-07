@@ -1,0 +1,167 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App should render component correctly 1`] = `
+<div
+  className="App"
+>
+  <header
+    className="App-header"
+  >
+    StandApp
+  </header>
+  <br />
+  <br />
+  <Row
+    className="justify-content-center"
+    tag="div"
+  >
+    <Col
+      sm="4"
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      <div
+        className="errorMsg"
+      />
+      <Form
+        tag="form"
+      >
+        <FormGroup
+          tag="div"
+        >
+          <Label
+            for="apiKey"
+            tag="label"
+            widths={
+              Array [
+                "xs",
+                "sm",
+                "md",
+                "lg",
+                "xl",
+              ]
+            }
+          >
+            API Key
+          </Label>
+          <Input
+            id="apiKey"
+            name="apiKey"
+            onChange={[Function]}
+            placeholder="Enter your API Key"
+            type="textfield"
+          />
+        </FormGroup>
+        <FormGroup
+          tag="div"
+        >
+          <Label
+            for="token"
+            tag="label"
+            widths={
+              Array [
+                "xs",
+                "sm",
+                "md",
+                "lg",
+                "xl",
+              ]
+            }
+          >
+            Token
+          </Label>
+          <Input
+            id="token"
+            name="token"
+            onChange={[Function]}
+            placeholder="Enter your Token"
+            type="password"
+          />
+        </FormGroup>
+        <FormGroup
+          tag="div"
+        >
+          <Label
+            for="token"
+            tag="label"
+            widths={
+              Array [
+                "xs",
+                "sm",
+                "md",
+                "lg",
+                "xl",
+              ]
+            }
+          >
+            Board ID
+          </Label>
+          <Input
+            id="boardId"
+            name="boardId"
+            onChange={[Function]}
+            type="select"
+          >
+            <option
+              value=""
+            >
+              Select a Board
+            </option>
+          </Input>
+        </FormGroup>
+        <FormGroup
+          tag="div"
+        >
+          <Label
+            for="calendar"
+            tag="label"
+            widths={
+              Array [
+                "xs",
+                "sm",
+                "md",
+                "lg",
+                "xl",
+              ]
+            }
+          >
+            StandUp Day
+          </Label>
+          <Calendar
+            maxDetail="month"
+            minDetail="century"
+            name="calendar"
+            onChange={[Function]}
+            returnValue="start"
+            showNavigation={true}
+            showNeighboringMonth={true}
+            value={2015-06-14T22:12:05.275Z}
+            view="month"
+          />
+        </FormGroup>
+        <Button
+          color="secondary"
+          onClick={[Function]}
+          tag="button"
+        >
+          Generate Stand Up
+        </Button>
+      </Form>
+    </Col>
+  </Row>
+  <br />
+  <br />
+  <Row
+    className="justify-content-center"
+    tag="div"
+  />
+</div>
+`;
