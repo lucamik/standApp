@@ -130,7 +130,7 @@ class App extends Component {
                             <Input type="password" name="token" id="token" placeholder="Enter your Token" value={this.state.token} onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="token">Board ID</Label>
+                            <Label for="token">Board</Label>
                             <Input type="select" name="boardId" id="boardId" value={this.state.boardId} onChange={this.handleChange} >
                                 <option value="">Select a Board</option>
                                 {this.state.boards.map((board) => {
