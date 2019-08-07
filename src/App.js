@@ -4,7 +4,7 @@ import { Form, FormGroup, Label, Input, Row, Col, Button, Alert } from "reactstr
 import Calendar from "react-calendar";
 import cookie from 'react-cookies';
 
-import {getActionsByBoardId, getMemberInfo} from "./classes/Trello";
+import {getActionsByBoardId, getBoards, getMemberInfo} from "./classes/Trello";
 
 
 class App extends Component {
@@ -16,7 +16,7 @@ class App extends Component {
             apiKey: cookie.load('apiKey'),
             token: cookie.load('token'),
             boardId: cookie.load('boardId'),
-            username: cookie.load('username'),
+            boards: [],
             idMember: '',
             fullName: '',
             date: new Date(),
@@ -28,9 +28,21 @@ class App extends Component {
         this.generateStandUp = this.generateStandUp.bind(this);
     }
 
+    componentDidMount() {
+        this.getBoardOptions()
+    }
+
+    async getBoardOptions() {
+        let boards = await getBoards(this.state.apiKey, this.state.token)
+        this.setState({
+            boards: boards
+        })
+    }
 
     handleChange(event) {
-        this.setState({[event.target.name]: event.target.value});
+        this.setState({[event.target.name]: event.target.value}, () => {
+            this.getBoardOptions()
+        })
         cookie.save(event.target.name, event.target.value, { path: '/' })
     }
 
@@ -46,10 +58,7 @@ class App extends Component {
             errorsTmp.push('Token is required')
         }
         if (!this.state.boardId) {
-            errorsTmp.push('BoardId is required')
-        }
-        if (!this.state.username) {
-            errorsTmp.push('Username is required')
+            errorsTmp.push('Board is required')
         }
 
         this.setState({
@@ -58,7 +67,7 @@ class App extends Component {
 
 
         if (errorsTmp.length === 0) {
-            let memberInfo = await getMemberInfo(this.state.username)
+            let memberInfo = await getMemberInfo(this.state.apiKey, this.state.token)
 
             if (memberInfo.memberId && memberInfo.memberFullName && !memberInfo.error) {
                 this.setState({
@@ -108,7 +117,7 @@ class App extends Component {
                 <br/><br/>
                 <Row className="justify-content-center">
                 <Col sm="4">
-                    <div>
+                    <div className="errorMsg">
                         {errorMsgs}
                     </div>
                     <Form>
@@ -121,12 +130,13 @@ class App extends Component {
                             <Input type="password" name="token" id="token" placeholder="Enter your Token" value={this.state.token} onChange={this.handleChange}/>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="token">Board ID</Label>
-                            <Input type="textfield" name="boardId" id="boardId" placeholder="Enter Board ID" value={this.state.boardId} onChange={this.handleChange}/>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="username">Username</Label>
-                            <Input type="textfield" name="username" id="username" placeholder="Enter Username" value={this.state.username} onChange={this.handleChange}/>
+                            <Label for="token">Board</Label>
+                            <Input type="select" name="boardId" id="boardId" value={this.state.boardId} onChange={this.handleChange} >
+                                <option value="">Select a Board</option>
+                                {this.state.boards.map((board) => {
+                                    return <option key={board.id} value={board.id}>{board.name}</option>
+                                })}
+                            </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="calendar">StandUp Day</Label>

@@ -1,13 +1,13 @@
 import {filterActivitiesPerMemberAndDate} from "./Filters";
 
-export const getMemberInfo = async (username) => {
+export const getMemberInfo = async (apiKey, token) => {
     let memberInfo = {
         memberId: null,
         memberFullName: null,
         error: null
     }
 
-    await fetch('https://api.trello.com/1/members/' + username)
+    await fetch('https://api.trello.com/1/member/me?key=' + apiKey + '&token=' + token)
         .then(response => response.json())
         .then(
             (data) => {
@@ -15,11 +15,29 @@ export const getMemberInfo = async (username) => {
                 memberInfo.memberFullName = data.fullName
             },
             (error) => {
-                memberInfo.error = 'Username does not exist'
+                memberInfo.error = 'Could not find any user with these credentials'
             }
         )
 
     return memberInfo
+}
+
+export const getBoards = async (apiKey, token) => {
+    let boards = []
+
+    await fetch('https://api.trello.com/1/member/me/boards?key=' + apiKey + '&token=' + token)
+        .then(response => response.json())
+        .then(
+            (data) => {
+                boards = data.map((board) => {
+                    return {'id': board.shortLink, 'name': board.name}
+                })
+            },
+            (error) => {
+            }
+        )
+
+    return boards
 }
 
 export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date) => {
@@ -44,7 +62,7 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
 
             switch (errorCode) {
                 case 400:
-                    errorMsg = 'Invalid Board Id'
+                    errorMsg = 'Invalid Board'
                     break
                 case 401:
                     errorMsg = 'Wrong credentials. Access denied'
