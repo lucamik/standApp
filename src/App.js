@@ -40,9 +40,10 @@ class App extends Component {
     }
 
     handleChange(event) {
-        this.setState({[event.target.name]: event.target.value});
+        this.setState({[event.target.name]: event.target.value}, () => {
+            this.getBoardOptions()
+        })
         cookie.save(event.target.name, event.target.value, { path: '/' })
-        this.getBoardOptions()
     }
 
     handleChangeDate = date => this.setState({ date })
