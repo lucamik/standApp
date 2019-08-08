@@ -1,4 +1,4 @@
-import {filterActivitiesPerMemberAndDate} from "./Filters";
+import {filterActivitiesPerMemberAndDate, filterBoardsByTeam} from "./Filters";
 
 export const getMemberInfo = async (apiKey, token) => {
     let memberInfo = {
@@ -22,18 +22,17 @@ export const getMemberInfo = async (apiKey, token) => {
     return memberInfo
 }
 
-export const getBoards = async (apiKey, token) => {
+export const getBoards = async (apiKey, token, team) => {
     let boards = []
 
     await fetch('https://api.trello.com/1/member/me/boards?key=' + apiKey + '&token=' + token)
         .then(response => response.json())
         .then(
             (data) => {
-                boards = data.map((board) => {
-                    return {'id': board.shortLink, 'name': board.name}
-                })
+                boards = filterBoardsByTeam(data, team)
             },
             (error) => {
+                console.log(error)
             }
         )
 
