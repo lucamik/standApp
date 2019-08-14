@@ -1,4 +1,4 @@
-import {filterActivitiesByMemberAndDate, filterBoardsByTeam} from "./Filters";
+import {filterActionsByMember, filterBoardsByTeam} from "./Filters";
 
 export const getMemberInfo = async (apiKey, token) => {
     let memberInfo = {
@@ -46,7 +46,10 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
     }
 
     await fetch('https://api.trello.com/1/boards/' + boardId +
-        '/actions?key=' + apiKey + '&token=' + token)
+        '/actions?key=' + apiKey + '&token=' + token +
+        '&since=' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() +
+        '&before=' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() + 1) +
+        '&limit=1000')
         .then(response => {
             if (response.status !== 200) {
                 throw new Error(response.status)
@@ -54,7 +57,7 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
             return response.json()
         })
         .then(data => {
-            result.data = filterActivitiesByMemberAndDate(data, memberId, date)
+            result.data = filterActionsByMember(data, memberId)
         }, (error) => {
             let errorMsg
             let errorCode = error.toString().match(/\d+/).map(Number)[0]
