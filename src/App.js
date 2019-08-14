@@ -4,6 +4,7 @@ import { Form, FormGroup, Label, Input, Row, Col, Button, Alert } from "reactstr
 import Calendar from "react-calendar";
 import cookie from 'react-cookies';
 import Autocomplete from 'react-autocomplete';
+import LoadingScreen from './components/LoadingScreen';
 
 import {getActionsByBoardId, getBoards, getMemberInfo} from "./classes/Trello";
 
@@ -23,7 +24,8 @@ class App extends Component {
             fullName: '',
             date: new Date(),
             data: [],
-            errors: []
+            errors: [],
+            loading: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -59,7 +61,10 @@ class App extends Component {
     handleChangeDate = date => this.setState({ date })
 
     async generateStandUp() {
-        console.log(this.state)
+        this.setState({
+            loading: true
+        })
+
         let errorsTmp = []
 
         if (!this.state.apiKey) {
@@ -76,7 +81,8 @@ class App extends Component {
         }
 
         this.setState({
-            errors: errorsTmp
+            errors: errorsTmp,
+            loading: false
         })
 
 
@@ -96,14 +102,18 @@ class App extends Component {
                         this.state.date
                     )
 
-                    if (result.data && ! result.error) {
-                        this.setState({data: result.data})
+                    if (result.data && !result.error) {
+                        this.setState({
+                            data: result.data,
+                            loading: false
+                        })
                     }
 
                     if (result.error) {
                         this.setState({
                             data: [],
-                            errors: [result.error]
+                            errors: [result.error],
+                            loading: false
                         })
                     }
                 })
@@ -112,7 +122,8 @@ class App extends Component {
             if (memberInfo.error) {
                 this.setState({
                     errors: [memberInfo.error],
-                    data: []
+                    data: [],
+                    loading: false
                 })
             }
         }
@@ -159,8 +170,8 @@ class App extends Component {
                             shouldItemRender={(item, value) =>
                                 (item.label.toLowerCase().indexOf(value.toLowerCase()) === 0 && value.length > 0) ? item.label : ''
                             }
-                            inputProps={{class:"form-control", id:"devTeam", name:"devTeam", placeholder:"Enter Your Team"}}
-                            wrapperProps={{class:"form-group"}}
+                            inputProps={{className:"form-control", id:"devTeam", name:"devTeam", placeholder:"Enter Your Team"}}
+                            wrapperProps={{className:"form-group"}}
                             wrapperStyle={{display: "block"}}
                             value={this.state.devTeam}
                             onChange={(event) => this.handleChange(event)}
@@ -190,13 +201,16 @@ class App extends Component {
                                 value={this.state.date}
                             />
                         </FormGroup>
-                        <Button onClick={() => this.generateStandUp()}>Generate Stand Up</Button>
+                        {(!this.state.loading) &&
+                        <FormGroup>
+                            <Button onClick={() => this.generateStandUp()}>Generate Stand Up</Button>
+                        </FormGroup>}
                     </Form>
                 </Col>
                 </Row>
                 <br/><br/>
                 <Row className="justify-content-center">
-                    {(this.state.data.length > 0 && this.state.errors.length === 0) ?
+                    {(this.state.loading) ? <LoadingScreen/> : (this.state.data.length > 0 && this.state.errors.length === 0) ?
                         <div><div>Keep it up {this.state.fullName}!</div>
                         <div><pre>{JSON.stringify(this.state.data, null, 2) }</pre></div></div> :
                         (this.state.fullName && this.state.errors.length === 0) ? <div>You have been lazy {this.state.fullName}!</div> : null}

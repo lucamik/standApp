@@ -1,4 +1,4 @@
-import {filterActivitiesPerMemberAndDate, filterBoardsByTeam} from "./Filters";
+import {filterActivitiesByMemberAndDate, filterBoardsByTeam} from "./Filters";
 
 export const getMemberInfo = async (apiKey, token) => {
     let memberInfo = {
@@ -54,7 +54,7 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
             return response.json()
         })
         .then(data => {
-            result.data = filterActivitiesPerMemberAndDate(data, memberId, date)
+            result.data = filterActivitiesByMemberAndDate(data, memberId, date)
         }, (error) => {
             let errorMsg
             let errorCode = error.toString().match(/\d+/).map(Number)[0]

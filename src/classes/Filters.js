@@ -1,5 +1,5 @@
 
-export const filterActivitiesPerMemberAndDate = (data, idMember, date) => {
+export const filterActivitiesByMemberAndDate = (data, idMember, date) => {
     return data.filter((item) => {
         let convDate = new Date(new Date(item.date).toLocaleString("en-US"));
         return item.idMemberCreator === idMember &&
