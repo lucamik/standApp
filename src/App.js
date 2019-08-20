@@ -5,6 +5,7 @@ import Calendar from "react-calendar";
 import cookie from 'react-cookies';
 import Autocomplete from 'react-autocomplete';
 import LoadingScreen from './components/LoadingScreen';
+import Report from './components/Report';
 
 import {getActionsByBoardId, getBoards, getMemberInfo} from "./classes/Trello";
 
@@ -201,19 +202,15 @@ class App extends Component {
                                 value={this.state.date}
                             />
                         </FormGroup>
-                        {(!this.state.loading) &&
                         <FormGroup>
                             <Button onClick={() => this.generateStandUp()}>Generate Stand Up</Button>
-                        </FormGroup>}
+                        </FormGroup>
                     </Form>
                 </Col>
                 </Row>
                 <br/><br/>
                 <Row className="justify-content-center">
-                    {(this.state.loading) ? <LoadingScreen/> : (this.state.data.length > 0 && this.state.errors.length === 0) ?
-                        <div><div>Keep it up {this.state.fullName}!</div>
-                        <div><pre>{JSON.stringify(this.state.data, null, 2) }</pre></div></div> :
-                        (this.state.fullName && this.state.errors.length === 0) ? <div>You have been lazy {this.state.fullName}!</div> : null}
+                    {this.state.loading ? <LoadingScreen/> : <Report data={this.state.data} />}
                 </Row>
             </div>
         );

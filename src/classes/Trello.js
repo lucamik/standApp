@@ -41,7 +41,7 @@ export const getBoards = async (apiKey, token, team) => {
 
 export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date) => {
     let result = {
-        data: null,
+        data: [],
         error: null
     }
 
@@ -56,8 +56,21 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
             }
             return response.json()
         })
-        .then(data => {
+        .then(async data => {
             result.data = filterActionsByMember(data, memberId)
+
+            let labelData = []
+            await getCardLabels(apiKey, token, result.data).then(label =>
+                labelData = label
+            )
+
+            let tempData = []
+            result.data.forEach(item => {
+                item.labelInfo = labelData.filter(label => label.cardId === item.data.card.id)[0]
+                tempData.push(item)
+            })
+
+            result.data = tempData
         }, (error) => {
             let errorMsg
             let errorCode = error.toString().match(/\d+/).map(Number)[0]
@@ -77,4 +90,23 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
         })
 
     return result
+}
+
+const getCardLabels = (apiKey, token, data) => {
+    let urls = []
+
+    data.forEach(item => {
+        urls.push({cardId: item.data.card.id, url: 'https://api.trello.com/1/card/' + item.data.card.id + '/labels' +
+                    '?key=' + apiKey + '&token=' + token})
+    })
+
+    const allRequests = urls.map(urlInfo =>
+        fetch(urlInfo.url)
+            .then(response => response.json())
+            .then(data => {
+                return {cardId: urlInfo.cardId, colors: data}
+            })
+    )
+
+    return Promise.all(allRequests);
 }
