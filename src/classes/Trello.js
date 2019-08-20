@@ -29,6 +29,7 @@ export const getBoards = async (apiKey, token, team) => {
         .then(response => response.json())
         .then(
             (data) => {
+                console.log(data)
                 boards = filterBoardsByTeam(data, team)
             },
             (error) => {
