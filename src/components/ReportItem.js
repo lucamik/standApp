@@ -9,16 +9,15 @@ class ReportItem extends Component {
         super(props)
 
         this.state = {
-            item: this.props.item
+            item: this.props.item,
+            first: this.props.first
         }
     }
 
     convertToReadable() {
-        return this.state.item.map(action => {
-            let labels = action.labelInfo.colors.map(colors =>
-                <Col key={colors.color} xs={1} className={"label " + colors.color}>&nbsp;</Col>
-            )
+        let first = true
 
+        return this.state.item.map(action => {
             let readableActions = []
 
             switch(action.type) {
@@ -29,11 +28,27 @@ class ReportItem extends Component {
                     break
                 default:
             }
+
+            let header = null
+
+            if (first) {
+                let labels = action.labelInfo.colors.map(colors =>
+                    <Col key={colors.color} xs={1} className={"label " + colors.color}>&nbsp;</Col>
+                )
+
+                header = (
+                    <Row>
+                        <Col xs={1}><Row>{labels}</Row></Col><Col md={10}
+                                                                  className='text-left cardTitle'>{action.data.card.name}</Col>
+                    </Row>
+                )
+            }
+
+            first = false
+
             return (
                 <Col key={action.id}>
-                    <Row>
-                        <Col xs={1}><Row>{labels}</Row></Col><Col md={10} className='text-left cardTitle'>{action.data.card.name}</Col>
-                    </Row>
+                    {header}
                     {readableActions.map(readableAction => <Row key="readableAction"><Col xs={1}>&nbsp;</Col><Col md={10} className='text-left'>{readableAction}</Col></Row>)}
                 </Col>
             )
