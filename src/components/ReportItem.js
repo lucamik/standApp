@@ -83,8 +83,7 @@ class ReportItem extends Component {
         if (before === 'In Review' && after === 'Needs Changes') {
             return 'Moved card to Needs Changes after review'
         }
-        return before + ' ' + after
-        //add all possible combinations
+        return 'Not readable case for this scenario: From ' + before + ' To ' + after
     }
 
     render() {
