@@ -37,10 +37,13 @@ class ReportItem extends Component {
                 )
 
                 header = (
-                    <Row>
-                        <Col xs={1}><Row>{labels}</Row></Col><Col md={10}
-                                                                  className='text-left cardTitle'>{action.data.card.name}</Col>
-                    </Row>
+                    <Col>
+                        <Row>&nbsp;</Row>
+                        <Row>
+                            <Col xs={1}><Row>{labels}</Row></Col><Col md={10}
+                                                                      className='text-left cardTitle'>{action.data.card.name}</Col>
+                        </Row>
+                    </Col>
                 )
             }
 
@@ -56,15 +59,31 @@ class ReportItem extends Component {
     }
 
     cardMoveInterpreter(before, after) {
+        if (before === 'Not Started' && after === 'In Progress') {
+            return 'Started working on this card'
+        }
         if (before === 'Needs Changes' && after === 'In Progress') {
-            return 'Started working on fixes after review'
+            return 'Started working on fixes after changes were requested'
         }
         if (before === 'In Progress' && after === 'Needs Review') {
-            return 'Worked on this card and got it ready for review'
+            return 'Got it ready for review'
         }
         if (before === 'In Progress' && after === 'Needs QA') {
-            return 'Worked on this card and it is now ready for QA'
+            return 'Got it ready for QA'
         }
+        if (before === 'Needs Review' && after === 'In Review') {
+            return 'Started reviewing this card'
+        }
+        if (before === 'In Review' && after === 'Done') {
+            return 'Moved card to Done after review'
+        }
+        if (before === 'In Review' && after === 'Needs QA') {
+            return 'Moved card to Needs QA after review'
+        }
+        if (before === 'In Review' && after === 'Needs Changes') {
+            return 'Moved card to Needs Changes after review'
+        }
+        return before + ' ' + after
         //add all possible combinations
     }
 

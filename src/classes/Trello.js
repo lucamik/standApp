@@ -66,8 +66,10 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
 
             let tempData = []
             result.data.forEach(item => {
-                item.labelInfo = labelData.filter(label => label.cardId === item.data.card.id)[0]
-                tempData.push(item)
+                if (item.data.card) {
+                    item.labelInfo = labelData.filter(label => label.cardId === item.data.card.id)[0]
+                    tempData.push(item)
+                }
             })
 
             result.data = tempData
@@ -96,8 +98,12 @@ const getCardLabels = (apiKey, token, data) => {
     let urls = []
 
     data.forEach(item => {
-        urls.push({cardId: item.data.card.id, url: 'https://api.trello.com/1/card/' + item.data.card.id + '/labels' +
-                    '?key=' + apiKey + '&token=' + token})
+        if (item.data.card) {
+            urls.push({
+                cardId: item.data.card.id, url: 'https://api.trello.com/1/card/' + item.data.card.id + '/labels' +
+                '?key=' + apiKey + '&token=' + token
+            })
+        }
     })
 
     const allRequests = urls.map(urlInfo =>
