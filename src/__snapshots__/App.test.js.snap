@@ -86,6 +86,78 @@ exports[`App should render component correctly 1`] = `
             type="password"
           />
         </FormGroup>
+        <Label
+          for="devTeam"
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          Team
+        </Label>
+        <Autocomplete
+          autoHighlight={true}
+          getItemValue={[Function]}
+          inputProps={
+            Object {
+              "class": "form-control",
+              "id": "devTeam",
+              "name": "devTeam",
+              "placeholder": "Enter Your Team",
+            }
+          }
+          isItemSelectable={[Function]}
+          items={
+            Array [
+              Object {
+                "label": "Chameleon",
+              },
+              Object {
+                "label": "Codebusters",
+              },
+              Object {
+                "label": "Scrumdiddy",
+              },
+            ]
+          }
+          menuStyle={
+            Object {
+              "background": "rgba(255, 255, 255, 0.9)",
+              "borderRadius": "3px",
+              "boxShadow": "0 2px 12px rgba(0, 0, 0, 0.1)",
+              "fontSize": "90%",
+              "maxHeight": "50%",
+              "overflow": "auto",
+              "padding": "2px 0",
+              "position": "fixed",
+            }
+          }
+          onChange={[Function]}
+          onMenuVisibilityChange={[Function]}
+          onSelect={[Function]}
+          renderInput={[Function]}
+          renderItem={[Function]}
+          renderMenu={[Function]}
+          selectOnBlur={false}
+          shouldItemRender={[Function]}
+          value=""
+          wrapperProps={
+            Object {
+              "class": "form-group",
+            }
+          }
+          wrapperStyle={
+            Object {
+              "display": "block",
+            }
+          }
+        />
         <FormGroup
           tag="div"
         >
@@ -102,9 +174,10 @@ exports[`App should render component correctly 1`] = `
               ]
             }
           >
-            Board ID
+            Board
           </Label>
           <Input
+            disabled="disabled"
             id="boardId"
             name="boardId"
             onChange={[Function]}

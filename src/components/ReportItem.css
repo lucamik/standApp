@@ -1,0 +1,55 @@
+.label {
+    border-radius: 10px;
+    margin: 5px;
+    width: 200px;
+    height: 20px;
+}
+
+.orange {
+    background-color: orange;
+}
+
+.green {
+    background-color: green;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.purple {
+    color: white;
+    background-color: purple;
+}
+
+.blue {
+    color: white;
+    background-color: blue;
+}
+
+.red {
+    color: white;
+    background-color: red;
+}
+
+.black {
+    color: white;
+    background-color: black;
+}
+
+.sky {
+    background-color: deepskyblue;
+}
+
+.pink {
+    background-color: pink;
+}
+
+.lime {
+    background-color: mediumseagreen;
+}
+
+.cardTitle {
+    font-weight: bold;
+    font-size: 20px;
+}
