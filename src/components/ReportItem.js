@@ -62,7 +62,7 @@ class ReportItem extends Component {
         if (before === 'Not Started' && after === 'In Progress') {
             return 'Started working on this card'
         }
-        if (before === 'Needs Changes' && after === 'In Progress') {
+        if ((before === 'Needs Changes' && after === 'In Progress') || (before === 'Needs Review' && after === 'In Progress')) {
             return 'Started working on fixes after changes were requested'
         }
         if (before === 'In Progress' && after === 'Needs Review') {
