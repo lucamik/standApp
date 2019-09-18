@@ -1,4 +1,4 @@
-import {filterActivitiesPerMemberAndDate} from "./Filters";
+import {filterActionsByMember, filterBoardsByTeam} from "./Filters";
 
 export const getMemberInfo = async (apiKey, token) => {
     let memberInfo = {
@@ -22,18 +22,17 @@ export const getMemberInfo = async (apiKey, token) => {
     return memberInfo
 }
 
-export const getBoards = async (apiKey, token) => {
+export const getBoards = async (apiKey, token, team) => {
     let boards = []
 
     await fetch('https://api.trello.com/1/member/me/boards?key=' + apiKey + '&token=' + token)
         .then(response => response.json())
         .then(
             (data) => {
-                boards = data.map((board) => {
-                    return {'id': board.shortLink, 'name': board.name}
-                })
+                boards = filterBoardsByTeam(data, team)
             },
             (error) => {
+                console.log(error)
             }
         )
 
@@ -42,20 +41,38 @@ export const getBoards = async (apiKey, token) => {
 
 export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date) => {
     let result = {
-        data: null,
+        data: [],
         error: null
     }
 
     await fetch('https://api.trello.com/1/boards/' + boardId +
-        '/actions?key=' + apiKey + '&token=' + token)
+        '/actions?key=' + apiKey + '&token=' + token +
+        '&since=' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() +
+        '&before=' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() + 1) +
+        '&limit=1000')
         .then(response => {
             if (response.status !== 200) {
                 throw new Error(response.status)
             }
             return response.json()
         })
-        .then(data => {
-            result.data = filterActivitiesPerMemberAndDate(data, memberId, date)
+        .then(async data => {
+            result.data = filterActionsByMember(data, memberId)
+
+            let labelData = []
+            await getCardLabels(apiKey, token, result.data).then(label =>
+                labelData = label
+            )
+
+            let tempData = []
+            result.data.forEach(item => {
+                if (item.data.card) {
+                    item.labelInfo = labelData.filter(label => label.cardId === item.data.card.id)[0]
+                    tempData.push(item)
+                }
+            })
+
+            result.data = tempData
         }, (error) => {
             let errorMsg
             let errorCode = error.toString().match(/\d+/).map(Number)[0]
@@ -75,4 +92,27 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
         })
 
     return result
+}
+
+const getCardLabels = (apiKey, token, data) => {
+    let urls = []
+
+    data.forEach(item => {
+        if (item.data.card) {
+            urls.push({
+                cardId: item.data.card.id, url: 'https://api.trello.com/1/card/' + item.data.card.id + '/labels' +
+                '?key=' + apiKey + '&token=' + token
+            })
+        }
+    })
+
+    const allRequests = urls.map(urlInfo =>
+        fetch(urlInfo.url)
+            .then(response => response.json())
+            .then(data => {
+                return {cardId: urlInfo.cardId, colors: data}
+            })
+    )
+
+    return Promise.all(allRequests);
 }
