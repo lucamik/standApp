@@ -211,6 +211,7 @@ class App extends Component {
                             <FormGroup>
                                 <Label for="calendar">StandUp Day</Label>
                                 <Calendar
+                                    className="container-fluid"
                                     name="calendar"
                                     onChange={this.handleChangeDate}
                                     value={this.state.date}

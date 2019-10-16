@@ -40,8 +40,8 @@ class ReportItem extends Component {
                     <Col>
                         <Row>&nbsp;</Row>
                         <Row>
-                            <Col xs={1}><Row>{labels}</Row></Col><Col md={10}
-                                                                      className='text-left cardTitle'>{action.data.card.name}</Col>
+                            <Col xs={1}><Row>{labels}</Row></Col>
+                            <Col md={10} className='text-left cardTitle'>{action.data.card.name}</Col>
                         </Row>
                     </Col>
                 )
