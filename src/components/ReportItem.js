@@ -41,7 +41,7 @@ class ReportItem extends Component {
                         <Row>&nbsp;</Row>
                         <Row>
                             <Col xs={1}><Row>{labels}</Row></Col>
-                            <Col md={10} className='text-left cardTitle'>{action.data.card.name}</Col>
+                            <Col md={10} className='text-left cardTitle'>{action.data.card.name} (Currently: <strong>{action.currentList}</strong>)</Col>
                         </Row>
                     </Col>
                 )
@@ -91,6 +91,18 @@ class ReportItem extends Component {
         }
         if (before === 'In QA' && after === 'QA Complete') {
             return 'QA completed successfully'
+        }
+        if (before === 'In QA' && after === 'In Progress') {
+            return 'Found an issue in QA. Working on a fix'
+        }
+        if (before === 'In QA' && after === 'Needs Changes') {
+            return 'Found an issue in QA. Pushed this card back for changes'
+        }
+        if (before === 'QA Complete' && after === 'Accepted') {
+            return 'Did UAT and it was accepted'
+        }
+        if (before === 'Accepted' && after === 'Done') {
+            return 'Deployed after acceptance'
         }
         if (before === 'Needs Review' && after === 'Done') {
             return 'Reviewed and moved to Done. No need for QA and UAT'
