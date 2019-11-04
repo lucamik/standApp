@@ -6,7 +6,7 @@ import './ReportItem.css';
 class ReportItem extends Component {
 
     constructor (props) {
-        super(props)
+        super(props);
 
         this.state = {
             item: this.props.item,
@@ -15,39 +15,50 @@ class ReportItem extends Component {
     }
 
     convertToReadable() {
-        let first = true
+        let first = true;
 
         return this.state.item.map(action => {
-            let readableActions = []
+            let readableActions = [];
 
             switch(action.type) {
                 case "updateCard":
                     if (action.data.listBefore && action.data.listAfter) {
-                        readableActions.push(this.cardMoveInterpreter(action.data.listBefore.name, action.data.listAfter.name))
+                        let decodedAction = this.cardMoveInterpreter(action.data.listBefore.name, action.data.listAfter.name, action.currentList);
+                        if (decodedAction) {
+                            readableActions.push(decodedAction);
+                        }
                     }
-                    break
+                    break;
                 default:
             }
 
-            let header = null
+            let header = null;
+            let nextAction = null;
 
             if (first) {
-                let labels = action.labelInfo.colors.map(colors =>
-                    <Col key={colors.color} xs={1} className={"label " + colors.color}>&nbsp;</Col>
-                )
+                let labels = action.labelInfo.colors.map(colors => {
+                    return (!colors.name) ?
+                        <Col key={colors.color} xs={1} className={"label " + colors.color}>&nbsp;</Col> : null
+                })
+
+                nextAction = action.labelInfo.colors.map(colors => {
+                        return (colors.name && colors.name !== "Blocked") ?
+                            <span key={colors.color} className={"label " + colors.color}><nobr>{colors.name}</nobr></span> : null
+
+                })
 
                 header = (
                     <Col>
                         <Row>&nbsp;</Row>
                         <Row>
                             <Col xs={1}><Row>{labels}</Row></Col>
-                            <Col md={10} className='text-left cardTitle'>{action.data.card.name} (Currently: <strong>{action.currentList}</strong>)</Col>
+                            <Col md={10} className='text-left cardTitle'>{action.data.card.name} (Currently: {nextAction.length > 0 ? nextAction : action.currentList})</Col>
                         </Row>
                     </Col>
                 )
             }
 
-            first = false
+            first = false;
 
             return (
                 <Col key={action.id}>
@@ -58,56 +69,24 @@ class ReportItem extends Component {
         })
     }
 
-    cardMoveInterpreter(before, after) {
-        if (before === 'Not Started' && after === 'In Progress') {
+    cardMoveInterpreter(before, after, current) {
+        if (before === 'Now Available' && after === 'In Dev') {
             return 'Started working on this card'
         }
-        if ((before === 'Needs Changes' && after === 'In Progress') || (before === 'Needs Review' && after === 'In Progress')) {
-            return 'Started working on fixes after changes were requested'
+        if (before === 'Now Available' && after === 'In Review') {
+            return current !== after ? 'Reviewed' : 'Started reviewing'
         }
-        if (before === 'Needs Changes' && after === 'Needs QA') {
-            return 'Moved card to Needs QA after review'
+        if (before === 'Now Available' && after === 'In QA') {
+            return current !== after ? 'Did QA' : 'Started doing QA'
         }
-        if (before === 'In Progress' && after === 'Needs Review') {
-            return 'Got it ready for review'
+        if (before === 'Now Available' && after === 'In Acceptance') {
+            return current !== after ? 'Did UAT' : 'Started doing UAT'
         }
-        if (before === 'In Progress' && after === 'Needs QA') {
-            return 'Got it ready for QA'
+        if (before === 'Now Available' && after === 'In Deployment') {
+            return current !== after ? 'Deployed to Production' : 'Started deploying to Production'
         }
-        if (before === 'Needs Review' && after === 'In Review') {
-            return 'Started reviewing this card'
-        }
-        if (before === 'In Review' && after === 'Done') {
-            return 'Moved card to Done after review'
-        }
-        if (before === 'In Review' && after === 'Needs QA') {
-            return 'Moved card to Needs QA after review'
-        }
-        if (before === 'In Review' && after === 'Needs Changes') {
-            return 'Moved card to Needs Changes after review'
-        }
-        if (before === 'Needs QA' && after === 'In QA') {
-            return 'Started doing QA on this card'
-        }
-        if (before === 'In QA' && after === 'QA Complete') {
-            return 'QA completed successfully'
-        }
-        if (before === 'In QA' && after === 'In Progress') {
-            return 'Found an issue in QA. Working on a fix'
-        }
-        if (before === 'In QA' && after === 'Needs Changes') {
-            return 'Found an issue in QA. Pushed this card back for changes'
-        }
-        if (before === 'QA Complete' && after === 'Accepted') {
-            return 'Did UAT and it was accepted'
-        }
-        if (before === 'Accepted' && after === 'Done') {
-            return 'Deployed after acceptance'
-        }
-        if (before === 'Needs Review' && after === 'Done') {
-            return 'Reviewed and moved to Done. No need for QA and UAT'
-        }
-        return 'Not readable case for this scenario: From ' + before + ' To ' + after
+
+        return null
     }
 
     render() {
