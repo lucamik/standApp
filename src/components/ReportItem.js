@@ -40,8 +40,8 @@ class ReportItem extends Component {
                     <Col>
                         <Row>&nbsp;</Row>
                         <Row>
-                            <Col xs={1}><Row>{labels}</Row></Col><Col md={10}
-                                                                      className='text-left cardTitle'>{action.data.card.name}</Col>
+                            <Col xs={1}><Row>{labels}</Row></Col>
+                            <Col md={10} className='text-left cardTitle'>{action.data.card.name}</Col>
                         </Row>
                     </Col>
                 )
@@ -65,6 +65,9 @@ class ReportItem extends Component {
         if ((before === 'Needs Changes' && after === 'In Progress') || (before === 'Needs Review' && after === 'In Progress')) {
             return 'Started working on fixes after changes were requested'
         }
+        if (before === 'Needs Changes' && after === 'Needs QA') {
+            return 'Moved card to Needs QA after review'
+        }
         if (before === 'In Progress' && after === 'Needs Review') {
             return 'Got it ready for review'
         }
@@ -82,6 +85,15 @@ class ReportItem extends Component {
         }
         if (before === 'In Review' && after === 'Needs Changes') {
             return 'Moved card to Needs Changes after review'
+        }
+        if (before === 'Needs QA' && after === 'In QA') {
+            return 'Started doing QA on this card'
+        }
+        if (before === 'In QA' && after === 'QA Complete') {
+            return 'QA completed successfully'
+        }
+        if (before === 'Needs Review' && after === 'Done') {
+            return 'Reviewed and moved to Done. No need for QA and UAT'
         }
         return 'Not readable case for this scenario: From ' + before + ' To ' + after
     }
