@@ -45,10 +45,13 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
         error: null
     }
 
+    let nextDay = new Date(date.getTime());
+    nextDay.setDate(date.getDate()+1);
+
     await fetch('https://api.trello.com/1/boards/' + boardId +
         '/actions?key=' + apiKey + '&token=' + token +
         '&since=' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() +
-        '&before=' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() + 1) +
+        '&before=' + nextDay.getFullYear() + '-' + (nextDay.getMonth() + 1) + '-' + nextDay.getDate() +
         '&limit=1000')
         .then(response => {
             if (response.status !== 200) {
