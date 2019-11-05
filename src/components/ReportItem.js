@@ -36,23 +36,18 @@ class ReportItem extends Component {
             let nextAction = null;
 
             if (first) {
-                let labels = action.labelInfo.colors.map(colors => {
-                    return (!colors.name) ?
-                        <Col key={colors.color} xs={1} className={"label " + colors.color}>&nbsp;</Col> : null
-                })
+                let labelColor = action.labelInfo.colors.filter(colors => !colors.name).map(colors => colors.color)
 
-                nextAction = action.labelInfo.colors.map(colors => {
-                        return (colors.name && colors.name !== "Blocked") ?
-                            <span key={colors.color} className={"label " + colors.color}><nobr>{colors.name}</nobr></span> : null
-
-                })
+                nextAction = action.labelInfo.colors.filter(colors =>
+                    colors.name !== '' && colors.name !== "Blocked" && colors.name !== "Stuck").map(colors =>
+                            <span key={colors.color} className={"p-1 m-1 " + colors.color}><nobr>{colors.name}</nobr></span>)
 
                 header = (
                     <Col>
                         <Row>&nbsp;</Row>
                         <Row>
-                            <Col xs={1}><Row>{labels}</Row></Col>
-                            <Col md={10} className='text-left cardTitle'>{action.data.card.name} (Currently: {nextAction.length > 0 ? nextAction : action.currentList})</Col>
+                            <Col xs={1} className={labelColor + "Label"}><div className="background">&nbsp;</div></Col>
+                            <Col md={10} className={"text-left cardTitle " + labelColor + "Title"}>{action.data.card.name} <span className="font-italic font-weight-normal">(Currently: {nextAction && nextAction.length > 0 ? nextAction : action.currentList})</span></Col>
                         </Row>
                     </Col>
                 )
@@ -63,7 +58,7 @@ class ReportItem extends Component {
             return (
                 <Col key={action.id}>
                     {header}
-                    {readableActions.map(readableAction => <Row key="readableAction"><Col xs={1}>&nbsp;</Col><Col md={10} className='text-left'>{readableAction}</Col></Row>)}
+                    {readableActions.map(readableAction => <Row key="readableAction"><Col xs={2}>&nbsp;</Col><Col md={10} className='text-left'>{readableAction}</Col></Row>)}
                 </Col>
             )
         })

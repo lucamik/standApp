@@ -1,52 +1,91 @@
-.label {
-    border-radius: 10px;
-    margin: 5px;
-    width: 200px;
-    height: 20px;
-}
-
-.orange {
+.orangeLabel {
+    border: 2px solid orange;
     background-color: orange;
 }
 
-.green {
+.orangeTitle {
+    border-bottom: 2px solid orange;
+}
+
+.greenLabel {
+    border: 2px solid green;
     background-color: green;
 }
 
-.yellow {
+.greenTitle {
+    border-bottom: 2px solid green;
+}
+
+.yellowLabel {
+    border: 2px solid yellow;
     background-color: yellow;
 }
 
-.purple {
-    color: white;
+.yellowTitle {
+    border-bottom: 2px solid yellow;
+}
+
+.purpleLabel {
+    border: 2px solid purple;
     background-color: purple;
 }
 
-.blue {
-    color: white;
+.purpleTitle {
+    border-bottom: 2px solid purple;
+}
+
+.blueLabel {
+    border: 2px solid blue;
     background-color: blue;
 }
 
-.red {
-    color: white;
+.blueTitle {
+    border-bottom: 2px solid blue;
+}
+
+.redLabel {
+    border: 2px solid red;
     background-color: red;
 }
 
-.black {
-    color: white;
+.redTitle {
+    border-bottom: 2px solid red;
+}
+
+.blackLabel {
+    border: 2px solid black;
     background-color: black;
 }
 
-.sky {
+.blackTitle {
+    border-bottom: 2px solid black;
+}
+
+.skyLabel {
+    border: 2px solid deepskyblue;
     background-color: deepskyblue;
 }
 
-.pink {
+.skyTitle {
+    border-bottom: 2px solid deepskyblue;
+}
+
+.pinkLabel {
+    border: 2px solid pink;
     background-color: pink;
 }
 
-.lime {
+.pinkTitle {
+    border-bottom: 2px solid pink;
+}
+
+.limeLabel {
+    border: 2px solid mediumseagreen;
     background-color: mediumseagreen;
+}
+
+.limeTitle {
+    border-bottom: 2px solid mediumseagreen;
 }
 
 .cardTitle {
