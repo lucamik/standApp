@@ -36,8 +36,6 @@ class ReportItem extends Component {
             let nextAction = null;
 
             if (first) {
-                let labelColor = action.labelInfo.colors.filter(colors => !colors.name).map(colors => colors.color)
-
                 nextAction = action.labelInfo.colors.filter(colors =>
                     colors.name !== '' && colors.name !== "Blocked" && colors.name !== "Stuck").map(colors =>
                             <span key={colors.color} className={"p-1 m-1 " + colors.color}><nobr>{colors.name}</nobr></span>)
@@ -46,8 +44,8 @@ class ReportItem extends Component {
                     <Col>
                         <Row>&nbsp;</Row>
                         <Row>
-                            <Col xs={1} className={labelColor + "Label"}><div className="background">&nbsp;</div></Col>
-                            <Col md={10} className={"text-left cardTitle " + labelColor + "Title"}>{action.data.card.name} <span className="font-italic font-weight-normal">(Currently: {nextAction && nextAction.length > 0 ? nextAction : action.currentList})</span></Col>
+                            <Col xs={1} className={action.storyColor + "Label"}><div className="background">&nbsp;</div></Col>
+                            <Col md={10} className={"text-left cardTitle " + action.storyColor + "Title"}>{action.data.card.name} <span className="font-italic font-weight-normal">(Currently: {nextAction && nextAction.length > 0 ? nextAction : action.currentList})</span></Col>
                         </Row>
                     </Col>
                 )
