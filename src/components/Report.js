@@ -10,7 +10,7 @@ class Report extends Component {
         this.state = {
             data: [],
             actions: [],
-            readableActions: []
+            readableActions: null
         }
 
         this.generateReadableReport = this.generateReadableReport.bind(this)
@@ -62,7 +62,10 @@ class Report extends Component {
     render() {
         return (
             <Container>
-                    {this.state.readableActions}
+                    {
+                        this.state.readableActions && this.state.readableActions.length === 0 ?
+                            <h4>No activity detected on that day</h4> : this.state.readableActions
+                    }
             </Container>
         );
     }
