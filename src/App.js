@@ -26,7 +26,8 @@ class App extends Component {
             date: this.getLastWorkingDay(),
             data: [],
             errors: [],
-            loading: false
+            loading: false,
+            submitted: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -119,6 +120,7 @@ class App extends Component {
                     if (result.data && !result.error) {
                         this.setState({
                             data: result.data,
+                            submitted: true,
                             loading: false
                         })
                     }
@@ -226,7 +228,7 @@ class App extends Component {
                     </Row>
                     <br/><br/>
                     <Row className="justify-content-center">
-                        <Report data={this.state.data} />
+                        <Report data={this.state.data} submitted={this.state.submitted} />
                     </Row>
                 </Loader>
             </div>

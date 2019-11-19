@@ -62,7 +62,10 @@ class Report extends Component {
     render() {
         return (
             <Container>
-                    {this.state.readableActions}
+                    {
+                        this.state.readableActions.length > 0 ? this.state.readableActions :
+                        this.props.submitted && <h4>No activity detected on that day</h4>
+                    }
             </Container>
         );
     }
