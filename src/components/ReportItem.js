@@ -35,30 +35,39 @@ class ReportItem extends Component {
             let header = null;
             let nextAction = null;
 
-            if (first) {
-                nextAction = action.labelInfo.colors.filter(colors =>
-                    colors.name !== '' && colors.name !== "Blocked" && colors.name !== "Stuck").map(colors =>
-                            <span key={colors.color} className={"p-1 m-1 " + colors.color}><nobr>{colors.name}</nobr></span>)
+            if (readableActions.length > 0) {
 
-                header = (
-                    <Col>
-                        <Row>&nbsp;</Row>
-                        <Row>
-                            <Col xs={1} className={action.storyColor + "Label"}><div className="background">&nbsp;</div></Col>
-                            <Col md={10} className={"text-left cardTitle " + action.storyColor + "Title"}>{action.data.card.name} <span className="font-italic font-weight-normal">(Currently: {nextAction && nextAction.length > 0 ? nextAction : action.currentList})</span></Col>
-                        </Row>
+                if (first) {
+                    nextAction = action.labelInfo.colors.filter(colors =>
+                        colors.name !== '' && colors.name !== "Blocked" && colors.name !== "Stuck").map(colors =>
+                        <span key={colors.color} className={"p-1 m-1 " + colors.color}><nobr>{colors.name}</nobr></span>)
+
+                    header = (
+                        <Col>
+                            <Row>&nbsp;</Row>
+                            <Row>
+                                <Col xs={1} className={action.storyColor + "Label"}>
+                                    <div className="background">&nbsp;</div>
+                                </Col>
+                                <Col md={10}
+                                     className={"text-left cardTitle " + action.storyColor + "Title"}>{action.data.card.name}
+                                    <span
+                                        className="font-italic font-weight-normal">(Currently: {nextAction && nextAction.length > 0 ? nextAction : action.currentList})</span></Col>
+                            </Row>
+                        </Col>
+                    )
+                }
+
+                first = false;
+
+                return (
+                    <Col key={action.id}>
+                        {header}
+                        {readableActions.map(readableAction => <Row key="readableAction"><Col xs={2}>&nbsp;</Col><Col
+                            md={10} className='text-left'>{readableAction}</Col></Row>)}
                     </Col>
                 )
             }
-
-            first = false;
-
-            return (
-                <Col key={action.id}>
-                    {header}
-                    {readableActions.map(readableAction => <Row key="readableAction"><Col xs={2}>&nbsp;</Col><Col md={10} className='text-left'>{readableAction}</Col></Row>)}
-                </Col>
-            )
         })
     }
 
