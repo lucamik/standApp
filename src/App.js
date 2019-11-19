@@ -26,8 +26,7 @@ class App extends Component {
             date: this.getLastWorkingDay(),
             data: [],
             errors: [],
-            loading: false,
-            submitted: false
+            loading: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -103,7 +102,13 @@ class App extends Component {
         if (errorsTmp.length === 0) {
             let memberInfo = await getMemberInfo(this.state.apiKey, this.state.token)
 
-            if (memberInfo.memberId && memberInfo.memberFullName && !memberInfo.error) {
+            if (memberInfo.error) {
+                this.setState({
+                    errors: [memberInfo.error],
+                    data: [],
+                    loading: false
+                })
+            } else if (memberInfo.memberId && memberInfo.memberFullName) {
                 this.setState({
                     idMember: memberInfo.memberId,
                     fullName: memberInfo.memberFullName,
@@ -117,31 +122,18 @@ class App extends Component {
                         this.state.date
                     )
 
-                    if (result.data && !result.error) {
-                        window.scrollTo(0,document.body.scrollHeight)
-
-                        this.setState({
-                            data: result.data,
-                            submitted: true,
-                            loading: false
-                        })
-                    }
-
                     if (result.error) {
                         this.setState({
                             data: [],
                             errors: [result.error],
                             loading: false
                         })
+                    } else if (result.data) {
+                        this.setState({
+                            data: result.data,
+                            loading: false
+                        })
                     }
-                })
-            }
-
-            if (memberInfo.error) {
-                this.setState({
-                    errors: [memberInfo.error],
-                    data: [],
-                    loading: false
                 })
             }
         }
@@ -240,7 +232,7 @@ class App extends Component {
                     </Row>
                     <br/><br/>
                     <Row className="justify-content-center">
-                        <Report data={this.state.data} submitted={this.state.submitted} />
+                        <Report data={this.state.data}/>
                     </Row>
                 </Loader>
             </div>
