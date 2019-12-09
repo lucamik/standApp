@@ -86,7 +86,7 @@ export const getActionsByBoardId = async (apiKey, token, boardId, memberId, date
 
             let tempData = []
             result.data.forEach(item => {
-                if (item.data.card) {
+                if (item.data.card && item.data.card.name) {
                     item.labelInfo = labelData.filter(label => label.cardId === item.data.card.id)[0]
                     item.currentList = currentListData.filter(list => list.cardId === item.data.card.id)[0].list
                     item.storyColor = storyColorData.filter(color => color.cardId === item.data.card.id)[0].color
@@ -120,7 +120,7 @@ const getCardLabels = (apiKey, token, data) => {
     let urls = []
 
     data.forEach(item => {
-        if (item.data.card) {
+        if (item.data.card && item.data.card.name && urls.filter(e => e.cardId === item.data.card.id).length <= 0) {
             urls.push({
                 cardId: item.data.card.id, url: 'https://api.trello.com/1/card/' + item.data.card.id + '/labels' +
                 '?key=' + apiKey + '&token=' + token
@@ -143,7 +143,7 @@ const getStoryColor = (apiKey, token, data, storyCustomField) => {
     let urls = []
 
     data.forEach(item => {
-        if (item.data.card) {
+        if (item.data.card && item.data.card.name && urls.filter(e => e.cardId === item.data.card.id).length <= 0) {
             urls.push({
                 cardId: item.data.card.id, url: 'https://api.trello.com/1/card/' + item.data.card.id + '/customFieldItems' +
                 '?key=' + apiKey + '&token=' + token
@@ -172,7 +172,7 @@ const getCurrentList = (apiKey, token, data) => {
     let urls = []
 
     data.forEach(item => {
-        if (item.data.card) {
+        if (item.data.card && item.data.card.name && urls.filter(e => e.cardId === item.data.card.id).length <= 0) {
             urls.push({
                 cardId: item.data.card.id, url: 'https://api.trello.com/1/card/' + item.data.card.id + '/list' +
                 '?key=' + apiKey + '&token=' + token
