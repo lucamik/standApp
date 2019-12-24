@@ -163,6 +163,16 @@ class App extends Component {
                                         <Label for="apiKey">API Key</Label>
                                         <Input type="textfield" name="apiKey" id="apiKey" placeholder="Enter your API Key" value={this.state.apiKey} onChange={this.handleChange}/>
                                     </FormGroup>
+                                </Col>
+                                <Col>
+                                    <FormGroup>
+                                        <Label for="token">Token</Label>
+                                        <Input type="password" name="token" id="token" placeholder="Enter your Token" value={this.state.token} onChange={this.handleChange}/>
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
                                     <Label for="devTeam">Team</Label>
                                     <Autocomplete
                                         getItemValue={(item) => item.label}
@@ -188,10 +198,6 @@ class App extends Component {
                                     />
                                 </Col>
                                 <Col>
-                                    <FormGroup>
-                                        <Label for="token">Token</Label>
-                                        <Input type="password" name="token" id="token" placeholder="Enter your Token" value={this.state.token} onChange={this.handleChange}/>
-                                    </FormGroup>
                                     <FormGroup>
                                         <Label for="token">Board</Label>
                                         <Input
