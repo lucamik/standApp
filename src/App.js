@@ -178,8 +178,7 @@ class App extends Component {
                                         getItemValue={(item) => item.label}
                                         items={[
                                             { label: 'Chameleon' },
-                                            { label: 'Codebusters' },
-                                            { label: 'Scrumdiddy' }
+                                            { label: 'sudoSquad' }
                                         ]}
                                         renderItem={(item, isHighlighted) =>
                                             <div key={item.label} style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
