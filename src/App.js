@@ -178,6 +178,7 @@ class App extends Component {
                                         getItemValue={(item) => item.label}
                                         items={[
                                             { label: 'Chameleon' },
+                                            { label: 'Phoenix' },
                                             { label: 'sudoSquad' }
                                         ]}
                                         renderItem={(item, isHighlighted) =>
